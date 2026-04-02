@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B1 Quiz 4: Obligation Modals & School Vocab</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#6366f1 0%,#4338ca 100%);min-height:100vh;padding:20px}
+.container{max-width:700px;margin:0 auto}
+.header{background:#fff;border-radius:20px;padding:25px;margin-bottom:20px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+.header h1{color:#4338ca;font-size:1.4em;margin-bottom:5px}
+.quiz-badge{background:#6366f1;color:#fff;padding:4px 12px;border-radius:20px;font-size:.8em;display:inline-block;margin-bottom:10px}
+.level-tag{background:#e0e7ff;color:#4338ca;padding:3px 10px;border-radius:10px;font-size:.75em;margin-left:8px}
+.timer-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:15px;padding:10px;background:#fff3cd;border-radius:10px}
+.timer-bar .icon{font-size:1.3em}
+.timer-bar .time{font-size:1.2em;font-weight:700;color:#856404}
+.timer-bar.warning{background:#ffebee}
+.timer-bar.warning .time{color:#c62828}
+.card{background:#fff;border-radius:16px;padding:25px;margin-bottom:15px;box-shadow:0 4px 15px rgba(0,0,0,.1)}
+.progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.progress-text{font-size:.9em;color:#666}
+.xp-display{background:#e0e7ff;padding:6px 12px;border-radius:20px;font-weight:600;color:#4338ca;font-size:.9em}
+.progress-bar-bg{height:8px;background:#e0e0e0;border-radius:4px;overflow:hidden;margin-bottom:20px}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,#6366f1,#4338ca);border-radius:4px;transition:width 0.3s}
+.question{margin-bottom:25px}
+.question-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:15px}
+.question-num{background:#4338ca;color:#fff;min-width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9em}
+.question-text{font-size:1.1em;color:#333;font-weight:500;line-height:1.4}
+.options{display:flex;flex-direction:column;gap:10px}
+.option{padding:15px;border:2px solid #e0e0e0;border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .2s}
+.option:hover{border-color:#6366f1;background:#e0e7ff}
+.option.selected{border-color:#6366f1;background:#c7d2fe}
+.option.correct{border-color:#22c55e;background:#f0fdf4}
+.option.incorrect{border-color:#ef4444;background:#fef2f2}
+.option.disabled{pointer-events:none}
+.option-letter{width:28px;height:28px;border:2px solid #ccc;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.85em;flex-shrink:0}
+.option.selected .option-letter{border-color:#4338ca;background:#4338ca;color:#fff}
+.option.correct .option-letter{border-color:#22c55e;background:#22c55e;color:#fff}
+.option.incorrect .option-letter{border-color:#ef4444;background:#ef4444;color:#fff}
+.option-text{flex:1}
+.feedback{margin-top:10px;padding:12px 15px;border-radius:10px;font-size:.9em;display:none}
+.feedback.correct{background:#f0fdf4;border:1px solid #22c55e;color:#166534}
+.feedback.incorrect{background:#fef2f2;border:1px solid #ef4444;color:#991b1b}
+.feedback.show{display:block}
+.btn{background:#4338ca;color:#fff;border:none;padding:14px 32px;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;width:100%;margin-top:15px;transition:all .2s}
+.btn:hover{background:#3730a3}
+.btn:disabled{background:#ccc;cursor:not-allowed}
+.btn-next{background:#22c55e}
+.btn-next:hover{background:#16a34a}
+.results-screen{display:none}
+.results-card{background:linear-gradient(135deg,#6366f1,#4338ca);border-radius:20px;padding:35px;color:#fff;text-align:center}
+.results-score{font-size:4em;font-weight:700}
+.results-label{font-size:1.2em;opacity:.9;margin-top:5px}
+.results-message{font-size:1.2em;margin-top:20px;padding:15px;background:rgba(255,255,255,.15);border-radius:12px}
+.results-xp{margin-top:20px;font-size:1.1em}
+.results-xp span{font-size:1.5em;font-weight:700}
+.results-details{background:#fff;border-radius:16px;padding:20px;margin-top:20px;color:#333}
+.results-details h3{color:#4338ca;margin-bottom:15px}
+.result-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee}
+.result-row:last-child{border-bottom:none}
+.practice-section{background:#fff;border-radius:16px;padding:20px;margin-top:20px;border-left:4px solid #ef4444}
+.practice-section.success{border-left-color:#22c55e}
+.practice-section h3{color:#333;margin-bottom:15px}
+.practice-item{background:#fef2f2;border-radius:10px;padding:15px;margin-bottom:10px}
+.practice-item h4{color:#333;margin-bottom:8px;font-size:.95em}
+.practice-item p{color:#666;font-size:.85em;margin-bottom:10px}
+.practice-item ul{margin:10px 0;padding-left:20px;color:#666;font-size:.85em}
+.practice-item a{display:inline-block;background:#4338ca;color:#fff;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:.85em;font-weight:600}
+.strong-tag{display:inline-block;background:#e8f5e9;color:#2e7d32;padding:4px 10px;border-radius:15px;font-size:.8em;margin:3px;font-weight:500}
+.new-badge{background:#fff3cd;border:2px solid #ffc107;border-radius:12px;padding:15px;margin-top:15px;text-align:center}
+.new-badge h4{color:#856404;margin-bottom:5px}
+.new-badge .badge-icon{font-size:2em}
+.btn-dashboard{background:#F5A623;margin-top:15px}
+.btn-dashboard:hover{background:#e09000}
+.streak-box{background:linear-gradient(135deg,#818cf8,#6366f1);border-radius:12px;padding:15px;margin-top:15px;color:#fff;text-align:center}
+.streak-num{font-size:1.5em;font-weight:700}
+.name-section{margin-bottom:20px}
+.name-section input{width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:12px;font-size:16px}
+.name-section input:focus{outline:none;border-color:#6366f1}
+.class-section{margin:15px 0}
+.class-section select{width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:12px;font-size:16px;background:#fff;cursor:pointer}
+.class-section select:focus{outline:none;border-color:#6366f1}
+.start-card{text-align:center}
+.start-card h2{color:#4338ca;margin-bottom:10px}
+.start-card p{color:#666;margin-bottom:20px}
+.start-info{background:#e0e7ff;border-radius:12px;padding:15px;margin-bottom:20px;text-align:left}
+.start-info li{margin:8px 0;color:#555}</style>
+</head>
+<body>
+<div class="container">
+<div id="startScreen">
+<div class="header"><div class="quiz-badge">Quiz 4 of 4</div><span class="level-tag">B1 Intermediate</span><h1>📚 Modals, Present Perfect &amp; Vocabulary</h1><p style="color:#666;font-size:.9em">Class 14 Quiz &bull; Term 2/2026</p></div>
+<div class="card start-card">
+<h2>Welcome! 👋</h2>
+<p id="welcomeNameMsg">Ready to start?</p>
+<div class="start-info"><ul><li>⏱️ 20 questions &bull; 15 minutes</li><li>⭐ Earn XP for correct answers</li><li>🏆 Unlock badges for great performance</li><li>📊 Get personalized practice tips</li></ul></div>
+<div class="name-section" id="nameEntrySection"><input type="text" id="studentName" placeholder="Enter your full name..."></div>
+<select id="studentClass" style="width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:12px;font-size:16px;margin-bottom:15px">
+  <option value="">-- Select your class --</option>
+  <optgroup label="Laura Ebel">
+    <option value="3088 - Mon/Wed 9:00 AM (Laura)">Mon/Wed 9:00 AM - 10:30 AM (Laura)</option>
+    <option value="3090 - Mon/Wed 6:30 PM (Laura)">Mon/Wed 6:30 PM - 8:00 PM (Laura)</option>
+    <option value="3095 - Tue/Thu 11:00 AM (Laura)">Tue/Thu 11:00 AM - 12:30 PM (Laura)</option>
+  </optgroup>
+  <optgroup label="Jonelle Williams">
+    <option value="3098 - Tue/Thu 6:30 PM (Jonelle)">Tue/Thu 6:30 PM - 8:00 PM (Jonelle)</option>
+    <option value="3101 - Tue/Thu 8:30 PM (Jonelle)">Tue/Thu 8:30 PM - 10:00 PM (Jonelle)</option>
+  </optgroup>
+</select>
+<button class="btn" onclick="startQuiz()">Start Quiz →</button>
+</div></div>
+<div <div id="quizScreen" style="display:none">
+<div class="header"><div class="quiz-badge">Quiz 4 of 4</div><h1>🏫 Obligation Modals & School Vocab</h1><div class="timer-bar" id="timerBar"><span class="icon">⏱️</span><span class="time" id="timer">10:00</span></div></div>
+<div class="card"><div class="progress-row"><span class="progress-text">Question <span id="currentQ">1</span> of <span id="totalQ">15</span></span><span class="xp-display">⭐ <span id="currentXP">0</span> XP</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" id="progressBar" style="width:6.67%"></div></div><div id="questionContainer"></div><button class="btn" id="checkBtn" onclick="checkAnswer()" disabled>Check Answer</button><button class="btn btn-next" id="nextBtn" onclick="nextQuestion()" style="display:none">Next Question →</button></div>
+</div>
+<div class="results-screen" id="resultsScreen">
+<div class="results-card"><p style="opacity:.8">Quiz Complete!</p><div class="results-score" id="finalScore">0/15</div><div class="results-label" id="finalPercent">0%</div><div class="results-message" id="resultsMessage">Great job!</div><div class="results-xp">You earned <span id="earnedXP">0</span> XP! ⭐</div></div>
+<div class="results-details"><h3>📊 Your Results</h3><div class="result-row"><span>Correct Answers</span><span id="correctCount">0/15</span></div><div class="result-row"><span>Time Taken</span><span id="timeTaken">0:00</span></div><div class="result-row"><span>XP Earned</span><span id="xpEarned">0</span></div></div>
+<div class="practice-section" id="practiceSection"><h3 id="practiceTitle">📚 Areas to Practice</h3><div id="practiceContent"></div></div>
+<div id="newBadgeSection"></div><div id="streakSection"></div>
+<button id="formSubmitBtn" onclick="submitToTeacher()" style="background:linear-gradient(135deg,#f5a623,#e8470a);color:#fff;padding:20px;border-radius:14px;font-size:1.15em;font-weight:800;text-align:center;border:none;display:block;width:100%;box-sizing:border-box;letter-spacing:.5px;box-shadow:0 6px 20px rgba(245,166,35,.4);cursor:pointer;margin-top:20px;">📨 SUBMIT RESULTS TO TEACHER →</button>
+<div id="submitStatus" style="display:none;margin-top:16px;background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:16px;text-align:center;color:#15803d"></div>
+
+
+</div></div>
+<script>
+const STORAGE_KEY='SQA_B1_Quiz_Progress',QUIZ_ID=4,QUIZ_NAME='B1 Quiz 4: Modals, Present Perfect & Vocabulary (Class 14)',LEVEL='B1';
+const allQuestions=[{"q": "Parents ________ attend parent-teacher conferences to discuss their child's progress. (strong obligation)", "opts": ["Can", "should", "must", "will"], "correct": 2, "category": "obligation", "explanation": "'Must' expresses strong obligation: Parents must attend."}, {"q": "Students ________ complete their homework before the deadline. (necessity)", "opts": ["are", "should", "might", "have to"], "correct": 3, "category": "obligation", "explanation": "'Have to' expresses necessity: Students have to complete homework."}, {"q": "Which modal verb is used to give advice?", "opts": ["must", "need to", "should", "have to"], "correct": 2, "category": "obligation", "explanation": "'Should' is used to give advice: You should study harder."}, {"q": "You ________ arrive a few minutes early to the conference so you have time to review. (advice)", "opts": ["may", "can", "could", "should"], "correct": 3, "category": "obligation", "explanation": "'Should' gives advice: You should arrive early."}, {"q": "All students ________ wear appropriate clothing for physical education class. (strong obligation)", "opts": ["should", "must", "might", "may"], "correct": 1, "category": "obligation", "explanation": "'Must' = strong obligation: Students must wear appropriate clothing."}, {"q": "What is incorrect about: 'He can to speak three languages.'?", "opts": ["The subject is incorrect", "'To' should not be used after 'can'", "It should be past tense", "Nothing is wrong"], "correct": 1, "category": "modal_rules", "explanation": "Modal verbs are never followed by 'to'. Correct: He can speak three languages."}, {"q": "What is wrong with: 'He cans swim very well.'?", "opts": ["'Can' does not change form in third person", "The verb 'swim' is incorrect", "The subject should be 'They'", "It should be 'He can swimming'"], "correct": 0, "category": "modal_rules", "explanation": "Modal verbs never change form \u2014 no -s in third person. Correct: He can swim."}, {"q": "Complete the sentence pattern: Subject + ________ + Verb (Infinitive)", "opts": ["to", "Modal Verb", "adjective", "has"], "correct": 1, "category": "modal_rules", "explanation": "The pattern is: Subject + Modal Verb + Base Verb (infinitive without 'to')."}, {"q": "Which sentence correctly uses a modal verb?", "opts": ["She musts study for her exam.", "They have study for their exam.", "He should to study for his exam.", "You should study for your exam."], "correct": 3, "category": "modal_rules", "explanation": "Correct: You should study. Modals don't take -s, 'to', or change form."}, {"q": "Which sentence expresses necessity correctly?", "opts": ["The teacher need help the student.", "The student needs to complete the assignment.", "You needs study more.", "They must to try harder."], "correct": 1, "category": "modal_rules", "explanation": "'Needs to' is correct for necessity with third person: The student needs to complete..."}, {"q": "What is a 'report card'?", "opts": ["A permission slip for field trips", "A document showing a student's grades", "An attendance list", "A note to the parents"], "correct": 1, "category": "school_vocab", "explanation": "A report card is a document showing a student's grades."}, {"q": "Which school personnel would most likely help with a student's emotional or social issues?", "opts": ["Principal", "Counselor", "Librarian", "Janitor"], "correct": 1, "category": "school_vocab", "explanation": "A counselor helps with emotional or social issues."}, {"q": "What does 'permission slip' refer to in a school context?", "opts": ["A hall pass to use the restroom", "A document parents sign allowing their child to participate in an activity", "A note excusing a student's absence", "A library card"], "correct": 1, "category": "school_vocab", "explanation": "A permission slip is signed by parents to allow participation in an activity."}, {"q": "What does 'parent-teacher conference' mean?", "opts": ["A meeting where all parents discuss school issues", "A scheduled meeting between a teacher and a student's parents to discuss progress", "A large event where parents meet all school staff", "An online chat between parents and teachers"], "correct": 1, "category": "school_vocab", "explanation": "A parent-teacher conference is a meeting to discuss a student's progress."}, {"q": "What does it mean if a student is 'struggling with assignments'?", "opts": ["The student is having difficulty completing or understanding the work", "The student is carrying too many books", "The student is arguing with the teacher", "The student is helping others with their work"], "correct": 0, "category": "school_vocab", "explanation": "'Struggling with assignments' means having difficulty completing or understanding the work."},
+{"q": "I have studied English since _____.", "opts": ["four years", "I was a child", "two terms", "a long time"], "correct": 1, "category": "present_perfect", "explanation": "'Since' is used with a point in time: since I was a child."},
+{"q": "I have taken English classes for _____.", "opts": ["three years", "last year", "2025", "two weeks ago"], "correct": 0, "category": "present_perfect", "explanation": "'For' is used with a duration of time: for three years."},
+{"q": "Sara _____ sports after school for two years now.", "opts": ["played", "have played", "playing", "has played"], "correct": 3, "category": "present_perfect", "explanation": "With she/he/it use 'has + past participle': Sara has played."},
+{"q": "I _____ all my homework so far.", "opts": ["have do", "done", "finish", "have finished"], "correct": 3, "category": "present_perfect", "explanation": "Present perfect: have + past participle. I have finished."},
+{"q": "Both Ahmed and Fatima _____ their homework for the next two weeks.", "opts": ["has done", "have done", "doing", "have did"], "correct": 1, "category": "present_perfect", "explanation": "With plural subjects use 'have + past participle': have done."}];
+const practiceResources={"obligation": {"title": "Obligation & Advice Modals", "description": "Using must, have to, should for obligation and advice.", "tips": ["Must = strong obligation (rules, laws)", "Have to = necessity (external requirement)", "Should = advice (recommendation)", "Must is stronger than should", "Have to changes: I have to / She has to"], "link": "https://www.youtube.com/results?search_query=modal+verbs+obligation+must+have+to+should+B1"}, "modal_rules": {"title": "Modal Verb Rules", "description": "How modal verbs work grammatically.", "tips": ["Modals never add -s (NOT 'he cans')", "Modals are never followed by 'to' (NOT 'can to')", "Pattern: Subject + Modal + Base Verb", "Modals don't use auxiliaries (NOT 'do you can')", "'Need to' is not a true modal \u2014 it changes form"], "link": "https://www.youtube.com/results?search_query=modal+verb+grammar+rules+english"}, "present_perfect": {"title": "Present Perfect", "description": "Using have/has + past participle with since and for.", "tips": ["Use 'since' with a point in time (since 2020, since I was a child)", "Use 'for' with a duration (for three years, for two weeks)", "I/you/we/they + have + past participle", "he/she/it + has + past participle", "'So far', 'yet', 'already' are common present perfect signal words"], "link": "https://www.youtube.com/results?search_query=present+perfect+since+for+B1+english"}, "school_vocab": {"title": "School Vocabulary", "description": "Key words related to school communication.", "tips": ["Report card = document with grades", "Permission slip = parent's signed approval", "Parent-teacher conference = meeting about student progress", "Counselor = helps with emotional/social issues", "Struggling = having difficulty"], "link": "https://www.youtube.com/results?search_query=school+vocabulary+english+intermediate"}};
+let questions=[],currentQuestion=0,score=0,xpEarned=0,answered=false,timerInterval,timeLeft=600,startTime,studentName='',studentClass='',studentLevel='',categoryResults={};
+function shuffle(a){const arr=[...a];for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+function getProgress(){const s=localStorage.getItem(STORAGE_KEY);return s?JSON.parse(s):{quizzes:{},totalXP:0,streak:0,badges:[],name:''};}
+function saveProgress(p){localStorage.setItem(STORAGE_KEY,JSON.stringify(p));}
+function startQuiz(){
+  const progress = getProgress();
+  // Try to get name and class from dashboard localStorage
+  if (progress.name) {
+    studentName = progress.name;
+  } else {
+    studentName = document.getElementById('studentName').value.trim();
+    if (!studentName) { alert('Please enter your name'); return; }
+  }
+  studentClass = progress.studentClass || (document.getElementById('studentClass') ? document.getElementById('studentClass').value : '') || ''; if(!studentClass){alert('Please select your class');return;}
+  studentLevel = 'B1 (PS3) - Intermediate';
+  saveProgress(progress);
+  questions=shuffle([...allQuestions]);questions=questions.map(q=>{const opts=q.opts.map((o,i)=>({text:o,wasCorrect:i===q.correct}));const sh=shuffle(opts);return{...q,opts:sh.map(o=>o.text),correct:sh.findIndex(o=>o.wasCorrect)}});questions.forEach(q=>{if(!categoryResults[q.category])categoryResults[q.category]={correct:0,total:0};categoryResults[q.category].total++;});document.getElementById('startScreen').style.display='none';document.getElementById('quizScreen').style.display='block';document.getElementById('totalQ').textContent=questions.length;startTime=Date.now();startTimer();renderQuestion();
+}
+function startTimer(){timerInterval=setInterval(()=>{timeLeft--;document.getElementById('timer').textContent=Math.floor(timeLeft/60)+':'+String(timeLeft%60).padStart(2,'0');if(timeLeft<=60)document.getElementById('timerBar').classList.add('warning');if(timeLeft<=0){clearInterval(timerInterval);finishQuiz();}},1000);}
+function renderQuestion(){const q=questions[currentQuestion];document.getElementById('currentQ').textContent=currentQuestion+1;document.getElementById('progressBar').style.width=((currentQuestion+1)/questions.length*100)+'%';let html=`<div class="question"><div class="question-header"><div class="question-num">${currentQuestion+1}</div><div class="question-text">${q.q}</div></div><div class="options">`;q.opts.forEach((o,i)=>{html+=`<div class="option" data-idx="${i}" onclick="selectOption(this)"><div class="option-letter">${String.fromCharCode(65+i)}</div><div class="option-text">${o}</div></div>`;});html+=`</div><div class="feedback" id="feedback"></div></div>`;document.getElementById('questionContainer').innerHTML=html;document.getElementById('checkBtn').disabled=true;document.getElementById('checkBtn').style.display='block';document.getElementById('nextBtn').style.display='none';answered=false;}
+function selectOption(el){if(answered)return;document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');document.getElementById('checkBtn').disabled=false;}
+function checkAnswer(){if(answered)return;answered=true;const sel=document.querySelector('.option.selected');if(!sel)return;const idx=parseInt(sel.dataset.idx),q=questions[currentQuestion],correct=idx===q.correct;if(correct)categoryResults[q.category].correct++;document.querySelectorAll('.option').forEach(o=>o.classList.add('disabled'));if(correct){sel.classList.add('correct');score++;xpEarned+=10;document.getElementById('currentXP').textContent=xpEarned;}else{sel.classList.add('incorrect');document.querySelectorAll('.option')[q.correct].classList.add('correct');}const fb=document.getElementById('feedback');fb.className='feedback '+(correct?'correct':'incorrect')+' show';fb.innerHTML=(correct?'✅ <strong>Correct!</strong> ':'❌ <strong>Not quite.</strong> ')+q.explanation;document.getElementById('checkBtn').style.display='none';document.getElementById('nextBtn').style.display='block';document.getElementById('nextBtn').textContent=currentQuestion<questions.length-1?'Next Question →':'See Results →';}
+function nextQuestion(){currentQuestion++;if(currentQuestion<questions.length)renderQuestion();else finishQuiz();}
+function finishQuiz(){clearInterval(timerInterval);const timeTaken=Math.round((Date.now()-startTime)/1000),percent=Math.round((score/questions.length)*100);if(percent===100)xpEarned+=20;else if(percent>=80)xpEarned+=10;if(timeTaken<180)xpEarned+=10;const progress=getProgress();progress.quizzes=progress.quizzes||{};progress.quizzes[QUIZ_ID]={score,total:questions.length,time:timeTaken,date:new Date().toISOString(),categories:categoryResults};progress.totalXP=(progress.totalXP||0)+xpEarned;const newBadges=[];progress.badges=progress.badges||[];if(!progress.badges.includes('first_steps')){progress.badges.push('first_steps');newBadges.push({name:'First Steps',icon:'🌟'});}if(percent===100&&!progress.badges.includes('sharpshooter')){progress.badges.push('sharpshooter');newBadges.push({name:'Sharpshooter',icon:'🎯'});}if(timeTaken<180&&!progress.badges.includes('speed_demon')){progress.badges.push('speed_demon');newBadges.push({name:'Speed Demon',icon:'⚡'});}const today=new Date().toDateString();if(progress.lastQuizDate!==today){progress.streak=(progress.streak||0)+1;progress.lastQuizDate=today;}if(progress.streak>=3&&!progress.badges.includes('on_fire')){progress.badges.push('on_fire');newBadges.push({name:'On Fire',icon:'🔥'});}saveProgress(progress);const{weakAreas,practiceHTML,status,practicePath}=generatePractice(percent);submitToForm(score,questions.length,percent,timeTaken,xpEarned,progress.totalXP,weakAreas,status,practicePath);document.getElementById('quizScreen').style.display='none';document.getElementById('resultsScreen').style.display='block';document.getElementById('finalScore').textContent=score+'/'+questions.length;document.getElementById('finalPercent').textContent=percent+'%';document.getElementById('earnedXP').textContent=xpEarned;document.getElementById('correctCount').textContent=score+'/'+questions.length;document.getElementById('timeTaken').textContent=Math.floor(timeTaken/60)+':'+String(timeTaken%60).padStart(2,'0');document.getElementById('xpEarned').textContent=xpEarned+' XP';let msg;if(percent===100)msg="🎉 PERFECT! You're amazing!";else if(percent>=90)msg="🌟 Excellent work!";else if(percent>=80)msg="👏 Great job!";else if(percent>=70)msg="👍 Good effort!";else if(percent>=60)msg="🌱 Keep practicing!";else msg="🤗 Don't give up!";document.getElementById('resultsMessage').textContent=msg;const ps=document.getElementById('practiceSection');if(percent>=80){ps.classList.add('success');document.getElementById('practiceTitle').innerHTML='✅ Great Job!';}document.getElementById('practiceContent').innerHTML=practiceHTML;if(newBadges.length>0){let h='';newBadges.forEach(b=>{h+=`<div class="new-badge"><div class="badge-icon">${b.icon}</div><h4>Badge Unlocked!</h4><p>${b.name}</p></div>`;});document.getElementById('newBadgeSection').innerHTML=h;}if(progress.streak>1)document.getElementById('streakSection').innerHTML=`<div class="streak-box"><div class="streak-num">🔥 ${progress.streak} Quiz Streak!</div></div>`;}
+function generatePractice(percent){const weak=[],strong=[];for(const[c,r]of Object.entries(categoryResults)){if(r.total>0&&(r.correct/r.total)<0.7)weak.push(c);else strong.push(c);}let html='';if(percent<60){html='<p style="color:#c62828;margin-bottom:15px;font-weight:600">Score below 60% — Please review:</p>';weak.forEach(a=>{if(practiceResources[a]){const r=practiceResources[a];html+=`<div class="practice-item"><h4>⚠️ ${r.title}</h4><p>${r.description}</p><ul>${r.tips.map(t=>`<li>${t}</li>`).join('')}</ul><a href="${r.link}" target="_blank">📺 Watch Videos</a></div>`;}});if(strong.length>0){html+='<p style="margin-top:15px;color:#2e7d32">Good at: ';strong.forEach(a=>{if(practiceResources[a])html+=`<span class="strong-tag">${practiceResources[a].title}</span>`;});html+='</p>';}}else if(percent<80){html='<p style="margin-bottom:15px">Consider reviewing:</p>';weak.forEach(a=>{if(practiceResources[a]){const r=practiceResources[a];html+=`<div class="practice-item"><h4>📖 ${r.title}</h4><p>${r.description}</p><a href="${r.link}" target="_blank">📺 Practice More</a></div>`;}});strong.forEach(a=>{if(practiceResources[a])html+=`<span class="strong-tag">✓ ${practiceResources[a].title}</span>`;});}else{html='<p style="color:#2e7d32;margin-bottom:10px">You did great on:</p>';Object.keys(practiceResources).forEach(a=>html+=`<span class="strong-tag">✓ ${practiceResources[a].title}</span>`);}const status=percent>=80?'Ready for Quiz 4':percent>=60?'Review Recommended':'Practice Required';const path=weak.length>0?weak.map(a=>practiceResources[a]?practiceResources[a].title:a).join(', '):'None needed';return{weakAreas:path,practiceHTML:html,status,practicePath:path};}
+function submitToForm(score,total,percent,time,xp,totalXP,weak,status,path){
+  const nameWithClass=studentName+' · '+studentClass;
+  const timeStr=Math.floor(time/60)+':'+String(time%60).padStart(2,'0');
+  window._formPayload={
+    'entry.259682097': nameWithClass,
+    'entry.2006644851': studentLevel,
+    'entry.1804734502': QUIZ_NAME,
+    'entry.543583340': score+'/'+total,
+    'entry.875764515': percent+'%',
+    'entry.62512107': timeStr,
+    'entry.886790949': String(xp),
+    'entry.733779557': String(totalXP),
+    'entry.134668824': weak,
+    'entry.1786008516': status,
+    'entry.998097996': path
+  };
+}
+function submitToTeacher(){
+  const btn=document.getElementById('formSubmitBtn');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Submitting...';}
+  const formData=new FormData();
+  if(window._formPayload){
+    for(const[k,v]of Object.entries(window._formPayload)){formData.append(k,v);}
+  }
+  fetch('https://docs.google.com/forms/d/e/1FAIpQLSd--80V_b4ovCyNW76LAYTbGy30gvafPtU39a3ijUWLO5mGng/formResponse',{method:'POST',mode:'no-cors',body:formData}).catch(function(){});
+  const status=document.getElementById('submitStatus');
+  if(status){status.innerHTML='✅ <strong>Results submitted successfully!</strong><br><span style="font-size:0.9em;color:#555">Your teacher has received your quiz results.</span>';status.style.display='block';}
+  if(btn){btn.style.display='none';}
+}
+function goToDashboard(){window.location.href='b1-quiz-dashboard.html';}
+function retryQuiz(){location.reload();}
+
+// Pre-load name from dashboard on page load
+window.addEventListener('DOMContentLoaded', function() {
+  const progress = getProgress();
+  const nameMsg = document.getElementById('welcomeNameMsg');
+  const nameSection = document.getElementById('nameEntrySection');
+  if (progress.name) {
+    if (nameMsg) nameMsg.textContent = 'Welcome back, ' + progress.name + '! 👋';
+    if (nameSection) nameSection.style.display = 'none';
+  } else {
+    if (nameMsg) nameMsg.textContent = 'Enter your name to get started:';
+    if (nameSection) nameSection.style.display = 'block';
+  }
+});
+
+</script>
+</body>
+</html>
